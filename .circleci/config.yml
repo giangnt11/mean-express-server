@@ -1,39 +1,29 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:7.10
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
+      - image: google/cloud-sdk:alpine
     working_directory: ~/repo
-
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: yarn install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-        
-      # run tests!
-      - run: yarn test
-
-
+      - setup_remote_docker
+      - run: 
+          name: Check Gcloud version #1
+          command: gcloud version
+      - run: 
+          name: Install Docker client #2
+          command: |
+            curl -fSL "https://get.docker.com/builds/Linux/x86_64/docker-17.03.0-ce.tgz" -o docker.tgz
+            tar -xzvf docker.tgz
+            mv docker/* /usr/local/bin/
+            rmdir docker
+            rm docker.tgz
+            docker -v
+      - run:
+          name: Build Docker image #4
+          command: |
+            docker build . -t giangnguyen/express-server:dev
+      - run:
+          name: Push Docker Image to GCR registry #5
+          command: |
+             docker push giangnguyen/express-server:dev
