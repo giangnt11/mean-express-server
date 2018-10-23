@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service              # 1
+metadata:
+  name: express-server
+spec:
+  type: LoadBalancer       # 2
+  ports:
+  - port: 80               # 3
+    protocol: TCP          # 4
+    targetPort: 3000         # 5
+  selector:                # 6
+    app: express-server       # 7
+---
+apiVersion: extensions/v1beta1
+kind: Deployment                                          # 8
+metadata:
+  name: express-server
+spec:
+  replicas: 2                                             # 9
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate                                   # 10
+    rollingUpdate: 
+      maxUnavailable: 1                                   # 11
+      maxSurge: 1                                         # 12
+  template:
+    metadata:
+      labels:
+        app: express-server                                  # 13
+    spec:
+      containers:
+        - image: giangnguyen/express-server:dev #14
+          imagePullPolicy: Always                         # 15
+          name: express-server
+          ports:
+            - containerPort: 3000
