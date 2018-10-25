@@ -29,7 +29,7 @@ spec:
         app: express-server                                  # 13
     spec:
       containers:
-        - image: giangnguyen/express-server:dev #14
+        - image: giangnguyen/express-server #14
           imagePullPolicy: Always                         # 15
           name: express-server
           ports:

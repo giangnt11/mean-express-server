@@ -22,12 +22,12 @@ jobs:
       - run:
           name: Build Docker image #4
           command: |
-            docker build . -t giangnguyen/express-server:dev
+            docker build . -t giangnguyen/express-server:$CIRCLE_SHA1
       - run:
           name: Push Docker Image to GCR registry #5
           command: |
              docker login -u $HUB_ACCOUNT -p $HUB_PASS
-             docker push giangnguyen/express-server:dev
+             docker push giangnguyen/express-server:$CIRCLE_SHA1
   deploy:
     docker:
       - image: google/cloud-sdk:alpine
@@ -48,7 +48,7 @@ jobs:
           name: Deploy container to Dev Kubernetes cluster
           command: |
             kubectl apply -f deployment.yaml --record
-            kubectl rollout status deployment/${CIRCLE_PROJECT_REPONAME}
+            kubectl rollout status deployment/express-server
 workflows:
   version: 2
   build_and_deploy:
