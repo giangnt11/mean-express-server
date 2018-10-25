@@ -48,7 +48,6 @@ jobs:
           name: Install dependencies
           command: |
             apk add gettext libintl
-            mv /usr/bin/envsubst /usr/local/sbin/envsubst
       - run:
           name: Deploy container to Dev Kubernetes cluster
           command: |
