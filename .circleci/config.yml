@@ -28,3 +28,32 @@ jobs:
           command: |
              docker login -u $HUB_ACCOUNT -p $HUB_PASS
              docker push giangnguyen/express-server:dev
+  deploy:
+    docker:
+      - image: google/cloud-sdk:alpine
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Authenticate gcloud SDK with GCP project #1
+          command: |
+            echo $SERVICE_ACCOUNT_KEY > ${HOME}/gcp-key.json
+            gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+            gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
+      - run:
+          name: Install kubectl
+          command: gcloud components install kubectl
+      - run:
+          name: Deploy container to Dev Kubernetes cluster
+          command: |
+            kubectl apply -f deployment.yaml --record
+            kubectl rollout status deployment/${CIRCLE_PROJECT_REPONAME}
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
