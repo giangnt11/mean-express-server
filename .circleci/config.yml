@@ -47,7 +47,7 @@ jobs:
       - run:
           name: Deploy container to Dev Kubernetes cluster
           command: |
-            envsubst < deployment.yml > output.yml
+            envsubst < deployment.yaml > output.yaml
             kubectl apply -f output.yaml --record
             kubectl rollout status deployment/express-server
 workflows:
