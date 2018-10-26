@@ -25,8 +25,7 @@ router.get('/', (req, res) => {
 });
 /* Heavy task for test. */
 router.get('/heavytask', (req, res) => {
-   // Simulating async operation
-   setImmediate(function () {
+
     try {
         while (i < 1000000) {
             text += "The number is " + i;
@@ -36,7 +35,6 @@ router.get('/heavytask', (req, res) => {
     } catch (e) {
       res.status(400).send('Invalid JSON string')
     }
-  })
 });
 
 /* GET all users. */
