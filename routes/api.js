@@ -27,13 +27,14 @@ router.get('/', (req, res) => {
 router.get('/heavytask', (req, res) => {
 
     try {
+        var i = 0;
         while (i < 1000000) {
             text += "The number is " + i;
             i++;
         }
       res.send('Success')
     } catch (e) {
-      res.status(400).send('Invalid JSON string')
+      res.status(400).send(e)
     }
 });
 
