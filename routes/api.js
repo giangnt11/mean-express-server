@@ -23,6 +23,21 @@ const User = mongoose.model('User', userSchema);
 router.get('/', (req, res) => {
         res.send('api works');
 });
+/* Heavy task for test. */
+router.get('/heavytask', (req, res) => {
+   // Simulating async operation
+   setImmediate(function () {
+    try {
+        while (i < 1000000) {
+            text += "The number is " + i;
+            i++;
+        }
+      res.send('Success')
+    } catch (e) {
+      res.status(400).send('Invalid JSON string')
+    }
+  })
+});
 
 /* GET all users. */
 router.get('/users', (req, res) => {
