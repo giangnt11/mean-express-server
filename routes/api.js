@@ -29,7 +29,6 @@ router.get('/heavytask', (req, res) => {
     try {
         var i = 0;
         while (i < 1000000) {
-            text += "The number is " + i;
             i++;
         }
       res.send('Success')
